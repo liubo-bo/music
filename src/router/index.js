@@ -48,7 +48,9 @@ import SearchMusicList from "@/views/search/searchChildren/SearchMusicList.vue"
 import SearchSinger from "@/views/search/searchChildren/SearchSinger.vue"
 import SearchSong from "@/views/search/searchChildren/SearchSong.vue"
 import SearchVideo from "@/views/search/searchChildren/SearchVideo.vue"
-
+import Circulation from "@/views/circulation/Circulation.vue"
+import CirculationSinger from "@/views/circulation/circulationChildren/CirculationSinger.vue"
+import CirculationVideo from "@/views/circulation/circulationChildren/CirculationVideo.vue"
 
 
 //重复点击路由，避免到当前位置的冗余导航。 简单来说就是重复触发了同一个路由
@@ -109,6 +111,16 @@ const routes = [
           { path: '/search/searchmusiclist/:id', component: SearchMusicList },
           { path: '/search/searchsinger/:id', component: SearchSinger },
           { path: '/search/searchvideo/:id', component: SearchVideo },
+        ]
+      },
+      {
+        path: '/circulation',
+        name: 'circulation',
+        component: Circulation,
+        redirect: '/circulation/circulationsinger',
+        children: [
+          { path: '/circulation/circulationsinger', component: CirculationSinger },
+          { path: '/circulation/circulationvideo', component: CirculationVideo },
         ]
       },
       

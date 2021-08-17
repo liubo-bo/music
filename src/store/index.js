@@ -47,6 +47,8 @@ const state = {
     name: '',
     url: '',
   },
+  //收藏歌手列表
+  circulationSingerList: [],
 }
 
 const store = new Vuex.Store({
@@ -115,6 +117,10 @@ const store = new Vuex.Store({
     },
     updateDownloadMusicInfo(state, info){
       state.downloadMusicInfo = info;
+    },
+    //更新收藏歌手列表
+    updateCirculationSingerList(state, list){
+      state.circulationSingerList = list; 
     }
   }
 })

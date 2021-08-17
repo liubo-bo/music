@@ -31,7 +31,7 @@
               <i class="iconfont el-icon-video-camera"></i>
               <span slot="title">视频</span>
             </el-menu-item>
-            <el-menu-item index="/favorites">
+            <el-menu-item index="/circulation">
               <i class="iconfont el-icon-more-outline "></i>
               <span slot="title">收藏</span>
             </el-menu-item>
@@ -207,18 +207,18 @@ export default {
   height: calc(100vh - 105px);
 }
 .red{
-  width: 1000px;
-  height: 800px;
+  width: 80%;
+  height: 100%;
   background-color: red;
 }
 .yellow{
-  width: 1000px;
-  height: 800px;
+  width: 80%;
+  height: 100%;
   background-color: yellow;
 }
 .green{
-  width: 1000px;
-  height: 800px;
+  width: 80%;
+  height: 100%;
   background-color: green;
 }
 .background{

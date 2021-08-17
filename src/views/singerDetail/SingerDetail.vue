@@ -11,8 +11,9 @@
                     {{singerInfo.name}}
                 </div>
                 <div class="buttons">
-                    <div class="buttonitem">
-                        <i class="iconfont el-icon-star-off"></i>
+                    <div class="buttonitem" @click="Circulate">
+                        <i class="iconfont el-icon-star-off" v-if="!isCirculated"></i>
+                        <i class="iconfont el-icon-star-on" v-else></i>
                         <span>收藏</span>
                     </div>
                      <div class="buttonitem">
@@ -105,7 +106,9 @@ export default {
             //mv页数
             videoPage: 1,
             //mv信息
-            singerMvInfo: { mvs: [], hasMore: false}
+            singerMvInfo: { mvs: [], hasMore: false},
+            //是否被收藏
+            isCirculated: false,
             
         }
     },
@@ -132,6 +135,7 @@ export default {
                 }
             });
             this.singerInfo = res.data.data.artist;
+            this.isCir();
             //console.log(this.singerInfo);
         },
         //热歌50首
@@ -192,7 +196,7 @@ export default {
                     limit: 20 *this.videoPage
                 }
             });
-            console.log(res.data);
+            //console.log(res.data);
             this.singerMvInfo = res.data;
         },
         //收藏歌手列表
@@ -205,36 +209,64 @@ export default {
             })
             console.log(res);
         },
-       handleClick(){
-           console.log(11);
-       },
-       handleRowDbClick({ id, index, listId }){
-           if(listId != this.$route.params.id){
-               let musicListIndex = this.singerAlbum.findIndex(
-                (item) => item.album.id == listId
-                );
-                console.log(musicListIndex);
-                this.$store.commit("updateMusicId", id);
-                console.log(index);
-                //console.log(listId);
-                if(listId != this.$store.state.musicList){
-                    //重新传歌单到vuex
-                    this.$store.commit("updateMusicList", {
-                        musicList: this.singerAlbum[musicListIndex].songs,
-                        musicListId: listId,
-                    })
+        //点击收藏
+       async Circulate(){
+            this.isCirculated = !this.isCirculated;
+            await this.$http.get('/artist/sub', {
+                params: {
+                    id: this.$route.params.id,
+                    t: this.isCirculated ? 1 : 0,
                 }
-           }else{
-                this.$store.commit("updateMusicId", id);
-                if (this.$route.params.id != this.$store.state.musicListId) {
-                    // 将歌单传到vuex
-                    this.$store.commit("updateMusicList", {
-                        musicList: this.topSongs.topSongs,
-                        musicListId: this.$route.params.id,
-                    });
+            });
+            this.getCirculationSingerList();
+
+        },
+        async getCirculationSingerList(){
+            let timestamp = Date.parse(new Date());
+            let res = await this.$http.get('/artist/sublist', {
+                params: {
+                    timestamp,
                 }
-            }
-       },
+            });
+            console.log(res.data.data);
+            this.$store.commit("updateCirculationSingerList", res.data.data);
+        },
+        isCir(){
+            this.isCirculated = this.$store.state.circulationSingerList.some(
+                (item) => item.id == this.$route.params.id
+            );
+            //console.log("是否收藏"+this.isCirculated);
+        },
+        handleClick(){
+            console.log(11);
+        },
+        handleRowDbClick({ id, index, listId }){
+            if(listId != this.$route.params.id){
+                let musicListIndex = this.singerAlbum.findIndex(
+                    (item) => item.album.id == listId
+                    );
+                    console.log(musicListIndex);
+                    this.$store.commit("updateMusicId", id);
+                    console.log(index);
+                    //console.log(listId);
+                    if(listId != this.$store.state.musicList){
+                        //重新传歌单到vuex
+                        this.$store.commit("updateMusicList", {
+                            musicList: this.singerAlbum[musicListIndex].songs,
+                            musicListId: listId,
+                        })
+                    }
+            }else{
+                    this.$store.commit("updateMusicId", id);
+                    if (this.$route.params.id != this.$store.state.musicListId) {
+                        // 将歌单传到vuex
+                        this.$store.commit("updateMusicList", {
+                            musicList: this.topSongs.topSongs,
+                            musicListId: this.$route.params.id,
+                        });
+                    }
+                }
+        },
         // 专辑上拉触底加载
         load() {
             console.log("上拉触底");
